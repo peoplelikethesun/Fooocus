@@ -11,7 +11,7 @@ COPY requirements_docker.txt requirements_versions.txt /tmp/
 RUN pip install --no-cache-dir -r /tmp/requirements_docker.txt -r /tmp/requirements_versions.txt && \
 	rm -f /tmp/requirements_docker.txt /tmp/requirements_versions.txt
 RUN pip install --no-cache-dir xformers==0.0.23 --no-dependencies
-RUN curl -fsL -o /usr/local/lib/python3.10/dist-packages/gradio/frpc_linux_amd64_v0.2 https://cdn-media.huggingface.co/frpc-gradio-0.2/frpc_linux_amd64 && \
+RUN curl -fsL -o /usr/local/lib/python3.10/dist-packages/gradio/frpc_linux_amd64_v0.2 https://cdn-media.hf-mirror.com/frpc-gradio-0.2/frpc_linux_amd64 && \
 	chmod +x /usr/local/lib/python3.10/dist-packages/gradio/frpc_linux_amd64_v0.2
 
 RUN adduser --disabled-password --gecos '' user && \
@@ -23,7 +23,9 @@ RUN chown -R user:user /content
 WORKDIR /content
 USER user
 
-RUN git clone https://github.com/lllyasviel/Fooocus /content/app
+RUN git clone https://mirror.ghproxy.com/https://github.com/lllyasviel/Fooocus /content/app
+#将huggingface.co批量替换为hf-mirror.com
+RUN find /content/app/ -type f -exec sed -i 's/https\:\/\/huggingface.co/https\:\/\/hf-mirror.com/g' {} + && find /content/app/ -type f -exec sed -i 's/huggingface.co/hf-mirror.com/g' {} +
 RUN mv /content/app/models /content/app/models.org
 
 CMD [ "sh", "-c", "/content/entrypoint.sh ${CMDARGS}" ]
