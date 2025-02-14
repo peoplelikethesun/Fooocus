@@ -24,11 +24,9 @@ RUN chown -R user:user /content
 WORKDIR /content
 USER user
 
-RUN git clone https://ghfast.top/https://github.com/lllyasviel/Fooocus /content/app
+RUN git clone https://ghfast.top/https://github.com/peoplelikethesun/Fooocus /content/app
 #将huggingface.co批量替换为hf-mirror.com
 RUN find /content/app/ -type f -exec sed -i 's/https\:\/\/huggingface.co/https\:\/\/hf-mirror.com/g' {} + && find /content/app/ -type f -exec sed -i 's/huggingface.co/hf-mirror.com/g' {} +
 RUN mv /content/app/models /content/app/models.org
-#转为中文
-COPY ./language/ /content/app/language/
 
 CMD [ "sh", "-c", "/content/entrypoint.sh ${CMDARGS}" ]
